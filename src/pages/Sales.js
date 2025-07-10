@@ -53,7 +53,26 @@ const Sales = () => {
     }
   };
 
-  const totalSales = sales.reduce((sum, item) => sum + Number(item.revenue || 0), 0);
+  // Calculate total sales from the report data if available, otherwise from sales list (less accurate)
+  const calculateTotalSales = () => {
+    if (report && report.breakdown) {
+      return report.breakdown.reduce((sum, item) => sum + Number(item.total_revenue || 0), 0);
+    }
+    // Fallback: This might be inaccurate if 'sales' items don't have price or if revenue means something else.
+    // It's better to rely on the aggregated report.
+    // For individual sales, we'd need product price at the time of sale.
+    // The existing 'sales' array seems to lack individual revenue or price.
+    // The original `totalSales` was: sales.reduce((sum, item) => sum + Number(item.revenue || 0), 0);
+    // This implies 'sales' items might have a 'revenue' field from the backend.
+    // If sales items are guaranteed to have a 'revenue' field:
+    return sales.reduce((sum, item) => sum + Number(item.revenue || 0), 0);
+    // If not, and we must calculate from sales:
+    // This would require sales items to have price and quantity, e.g., item.price * item.quantity
+    // return sales.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.quantity || 0)), 0);
+  };
+
+  const totalSales = calculateTotalSales();
+
 
   useEffect(() => {
     fetchProducts();
