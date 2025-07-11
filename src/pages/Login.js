@@ -46,9 +46,11 @@ const LoginPage = () => {
     }
   }, [showLogin, showCart, showTab]);
 
-  const filteredProducts = products.filter(product =>
-    product.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+const filteredProducts = Array.isArray(products)
+  ? products.filter(product =>
+      product.name.toLowerCase().includes(searchTerm.toLowerCase())
+    )
+  : [];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
