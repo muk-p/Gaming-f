@@ -30,7 +30,11 @@ const LoginPage = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    axios.get('/products')
+    axios.get('/products', {
+  headers: {
+    Authorization: `Bearer ${token}`,
+  },
+})
       .then(res => setProducts(res.data))
       .catch(() => alert('Failed to load products'));
   }, []);
