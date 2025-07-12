@@ -1,5 +1,5 @@
 import { createContext, useState, useEffect } from 'react';
-import axios from '../api/axios'; // Adjust if needed
+import axios from '../api/axios'; 
 
 const AuthContext = createContext();
 
@@ -9,6 +9,7 @@ export const AuthProvider = ({ children }) => {
   // Called after login to set user and store token
   const login = (token) => {
     localStorage.setItem('token', token);
+    console.log(${token})
     axios.get('/auth/me', {
       headers: { Authorization: `Bearer ${token}` },
     })
