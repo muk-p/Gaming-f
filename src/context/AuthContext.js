@@ -9,7 +9,6 @@ export const AuthProvider = ({ children }) => {
   // Called after login to set user and store token
   const login = (token) => {
     localStorage.setItem('token', token);
-    console.log(${token});
     axios.get('/auth/me', {
       headers: { Authorization: `Bearer ${token}` },
     })
