@@ -230,12 +230,12 @@ const Products = () => {
             required
           />
           <input
-            type="file"
-            accept="image/*"
-            onChange={handleImageChange}
-            className="w-full"
+            type="text"
+            placeholder="Image URL"
+            value={newProduct.image}
+            onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
+            className="w-full p-2 border"
           />
-          {imagePreview && <img src={imagePreview} alt="Preview" className="w-32 h-32 object-cover rounded" />}
           <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
             Add Product
           </button>
@@ -286,16 +286,12 @@ const Products = () => {
                     className="w-full p-1 border mb-1"
                   />
                   <input
-                    type="file"
-                    accept="image/*"
-                    onChange={handleEditImageChange}
-                    className="mb-2"
+                    type="text"
+                    placeholder="Image URL"
+                    value={editProductData.image}
+                    onChange={e => setEditProductData({ ...editProductData, image: e.target.value })}
+                    className="w-full p-1 border mb-1"
                   />
-                  {editImagePreview ? (
-                    <img src={editImagePreview} alt="Edit Preview" className="w-24 h-24 object-cover rounded mb-2" />
-                  ) : editProductData.image ? (
-                    <img src={`http://localhost:5000/uploads/${editProductData.image}`} alt={editProductData.name} className="w-24 h-24 object-cover rounded mb-2" />
-                  ) : null}
                   <div>
                     <button className="bg-green-600 text-white px-3 py-1 rounded mr-2" onClick={() => saveEdit(id)}>Save</button>
                     <button className="bg-gray-400 text-black px-3 py-1 rounded" onClick={cancelEdit}>Cancel</button>
@@ -305,13 +301,11 @@ const Products = () => {
                 <>
                 <div className="top">
                   <h2 className="font-semibold mb-2">{name} - KES {price}</h2>
-                  {image && (
-                    <img
-                      src={`http://localhost:5000/uploads/${image}`}
-                      alt={name}
-                      className="w-24 h-24 object-cover rounded mb-2"
-                    />
-                  )}
+                  <img
+                    src={image}
+                    alt={name}
+                    className="w-24 h-24 object-cover rounded mb-2"
+                  />
                 </div>
                   
                   <p className="mt-2 text-sm">{description}</p>

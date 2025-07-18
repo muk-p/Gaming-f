@@ -24,13 +24,11 @@ const ProductCard = ({ product, onAdd }) => {
       onClick={toggleDescription}
     >
       <div className="top mb-3">
-        {image && (
-          <img
-            src={`http://localhost:5000/uploads/${image}`}
-            alt={name}
-            className="w-full h-48 object-cover rounded-md mb-2" // Changed w-fit to w-full for consistency
-          />
-        )}
+        <img
+          src={image}
+          alt={name}
+          className="w-full h-48 object-cover rounded-md mb-2"
+        />
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white">{name}</h3>
       </div>
       <p className="text-green-600 font-medium mb-1">KES {price}</p>

@@ -1,4 +1,4 @@
-const LoginForm = ({ username, setUsername, password, setPassword, onSubmit, onClose }) => (
+const LoginForm = ({ email, setEmail, password, setPassword, onSubmit, onClose }) => (
   <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center z-50">
   <form onSubmit={onSubmit} className="w-full max-w-sm px-4">
     <div className="bg-white dark:bg-gray-900 p-6 rounded-lg shadow-lg relative space-y-4">
@@ -17,13 +17,13 @@ const LoginForm = ({ username, setUsername, password, setPassword, onSubmit, onC
         </button>
       </div>
 
-      {/* Username */}
+      {/* Email */}
       <input
-        type="text"
-        placeholder="Username"
+        type="email"
+        placeholder="Email"
         className="w-full p-2 border rounded-md focus:outline-none focus:ring-2 focus:ring-indigo-500 dark:bg-gray-800 dark:text-white dark:border-gray-700"
-        value={username}
-        onChange={e => setUsername(e.target.value)}
+        value={email}
+        onChange={e => setEmail(e.target.value)}
         required
       />
 

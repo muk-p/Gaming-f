@@ -14,7 +14,7 @@ const LoginPage = () => {
   const [showLogin, setShowLogin] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showTab, setShowTab] = useState(false);
-  const [username, setUsername] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [products, setProducts] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
@@ -55,10 +55,10 @@ const filteredProducts = Array.isArray(products)
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/auth/login', { username, password });
+      const res = await axios.post('/auth/login', { email, password });
       login(res.data.token);
       setShowLogin(false);
-      setUsername('');
+      setEmail('');
       setPassword('');
       setShowTab(true);
     } catch {
@@ -112,8 +112,8 @@ const filteredProducts = Array.isArray(products)
 
   {showLogin && (
     <LoginForm
-      username={username}
-      setUsername={setUsername}
+      email={email}
+      setEmail={setEmail}
       password={password}
       setPassword={setPassword}
       onClose={() => setShowLogin(false)}
