@@ -165,7 +165,7 @@ const filteredProducts = Array.isArray(products)
 
   <footer className="bg-gray-200 dark:bg-gray-800 text-center py-4 mt-8 shadow-inner">
     <p className="text-sm text-gray-700 dark:text-gray-400">
-      &copy; 2023 Gaming Store. All rights reserved.
+      &copy; 2025 Gaming Store. All rights reserved.
     </p>
   </footer>
 </div>

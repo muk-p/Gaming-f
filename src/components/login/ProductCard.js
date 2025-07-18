@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const ProductCard = ({ product, onAdd }) => {
-  const { id, name, price, image, description } = product;
+  const { id, name, price, imageUrl, description } = product;
   const [isDescriptionVisible, setIsDescriptionVisible] = useState(false);
 
   const toggleDescription = (e) => {
@@ -25,7 +25,8 @@ const ProductCard = ({ product, onAdd }) => {
     >
       <div className="top mb-3">
         <img
-          src={image.startsWith('http') ? image : `http://localhost:5000/uploads/${image}`}
+          src={imageUrl.startsWith('http') ? image : `${imageUrl}`}
+
           alt={name}
           className="w-full h-48 object-cover rounded-md mb-2"
         />
