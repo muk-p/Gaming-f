@@ -91,10 +91,25 @@ const Products = () => {
 
   const handleAddProduct = async (e) => {
     e.preventDefault();
+    const formData = new FormData();
+    formData.append('name', newProduct.name);
+    formData.append('description', newProduct.description);
+    formData.append('price', newProduct.price);
+    formData.append('stock', newProduct.stock);
+    if (imageFile) {
+      formData.append('image', imageFile);
+    }
+
     try {
-      await axios.post('/products', newProduct);
+      await axios.post('/products', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       alert('Product added');
-      setNewProduct({ name: '', description: '', price: '', stock: '', image: '' });
+      setNewProduct({ name: '', description: '', price: '', stock: '' });
+      setImageFile(null);
+      setImagePreview(null);
       fetchProducts();
     } catch (err) {
       alert('Failed to add product');
@@ -141,8 +156,24 @@ const Products = () => {
   };
 
   const saveEdit = async (id) => {
+    const formData = new FormData();
+    formData.append('name', editProductData.name);
+    formData.append('description', editProductData.description);
+    formData.append('price', editProductData.price);
+    formData.append('stock', editProductData.stock);
+    if (editImageFile) {
+      formData.append('image', editImageFile);
+    } else if (editProductData.image) {
+      formData.append('image', editProductData.image);
+    }
+
+
     try {
-      await axios.put(`/products/${id}`, editProductData);
+      await axios.put(`/products/${id}`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
       alert('Product updated');
       cancelEdit();
       fetchProducts();
@@ -191,12 +222,13 @@ const Products = () => {
             required
           />
           <input
-            type="text"
-            placeholder="Image URL"
-            value={newProduct.image}
-            onChange={e => setNewProduct({ ...newProduct, image: e.target.value })}
+            type="file"
+            onChange={handleImageChange}
             className="w-full p-2 border"
           />
+          {imagePreview && (
+            <img src={imagePreview} alt="Preview" className="w-24 h-24 object-cover" />
+          )}
           <button type="submit" className="bg-blue-600 text-white px-4 py-2 rounded">
             Add Product
           </button>
@@ -247,12 +279,21 @@ const Products = () => {
                     className="w-full p-1 border mb-1"
                   />
                   <input
-                    type="text"
-                    placeholder="Image URL"
-                    value={editProductData.image}
-                    onChange={e => setEditProductData({ ...editProductData, image: e.target.value })}
+                    type="file"
+                    onChange={handleEditImageChange}
                     className="w-full p-1 border mb-1"
                   />
+                  {editImagePreview ? (
+                    <img src={editImagePreview} alt="New Preview" className="w-24 h-24 object-cover" />
+                  ) : (
+                    editProductData.image && (
+                      <img
+                        src={`https://backend2-production-72ac.up.railway.app/${editProductData.image}`}
+                        alt="Current"
+                        className="w-24 h-24 object-cover"
+                      />
+                    )
+                  )}
                   <div>
                     <button className="bg-green-600 text-white px-3 py-1 rounded mr-2" onClick={() => saveEdit(id)}>Save</button>
                     <button className="bg-gray-400 text-black px-3 py-1 rounded" onClick={cancelEdit}>Cancel</button>
@@ -263,7 +304,7 @@ const Products = () => {
                 <div className="top">
                   <h2 className="font-semibold mb-2">{name} - KES {price}</h2>
                   <img
-                    src={image}
+                    src={`https://backend2-production-72ac.up.railway.app/${image}`}
                     alt={name}
                     className="w-24 h-24 object-cover rounded mb-2"
                   />
