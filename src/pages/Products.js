@@ -90,41 +90,16 @@ const Products = () => {
   };
 
   const handleAddProduct = async (e) => {
-  e.preventDefault();
-
-  const { name, description, price, stock } = newProduct;
-
-  // Basic input validations
-  if (!name || name.length < 3) return alert('Name must be at least 3 characters long');
-  if (!description || description.length > 500) return alert('Description is required and should be under 500 characters');
-  if (!price || isNaN(price) || Number(price) <= 0) return alert('Enter a valid positive price');
-  if (!stock || isNaN(stock) || Number(stock) < 0) return alert('Enter a valid non-negative stock value');
-
-  // Image validations
-  if (imageFile) {
-    const validTypes = ['image/jpeg', 'image/png', 'image/jpg'];
-    if (!validTypes.includes(imageFile.type)) return alert('Only JPG or PNG image files are allowed');
-    if (imageFile.size > 2 * 1024 * 1024) return alert('Image size must be less than 2MB');
-  }
-
-  try {
-    const formData = new FormData();
-    Object.entries(newProduct).forEach(([key, val]) => formData.append(key, val));
-    if (imageFile) formData.append('image', imageFile);
-
-    await axios.post('/products', formData, {
-      headers: { 'Content-Type': 'multipart/form-data' },
-    });
-
-    alert('Product added');
-    setNewProduct({ name: '', description: '', price: '', stock: '' });
-    setImageFile(null);
-    setImagePreview(null);
-    fetchProducts();
-  } catch (err) {
-    alert('Failed to add product');
-  }
-};
+    e.preventDefault();
+    try {
+      await axios.post('/products', newProduct);
+      alert('Product added');
+      setNewProduct({ name: '', description: '', price: '', stock: '', image: '' });
+      fetchProducts();
+    } catch (err) {
+      alert('Failed to add product');
+    }
+  };
 
 
   // Edit handlers
@@ -167,21 +142,7 @@ const Products = () => {
 
   const saveEdit = async (id) => {
     try {
-      const formData = new FormData();
-      formData.append('name', editProductData.name);
-      formData.append('description', editProductData.description);
-      formData.append('price', editProductData.price);
-      formData.append('stock', editProductData.stock);
-      if (editImageFile) formData.append('image', editImageFile);
-
-       for (let [key, val] of formData.entries()) {
-      console.log(key, val);
-      }
-
-      await axios.put(`/products/${id}`, formData, {
-        headers: { 'Content-Type': 'multipart/form-data' },
-      });
-
+      await axios.put(`/products/${id}`, editProductData);
       alert('Product updated');
       cancelEdit();
       fetchProducts();
