@@ -304,7 +304,7 @@ const Products = () => {
                 <div className="top">
                   <h2 className="font-semibold mb-2">{name} - KES {price}</h2>
                   <img
-                    src={`https://backend2-production-72ac.up.railway.app/${image}`}
+                    src={`https://back-gf-production.up.railway.app/uploads/${image}`}
                     alt={name}
                     className="w-24 h-24 object-cover rounded mb-2"
                   />
