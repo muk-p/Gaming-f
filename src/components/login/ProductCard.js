@@ -31,7 +31,8 @@ const ProductCard = ({ product, onAdd }) => {
         />
         <h3 className="text-lg font-semibold text-gray-800 dark:text-white">{name}</h3>
       </div>
-      <p className="text-green-600 font-medium mb-1">KES {price}</p>
+      <p className="text-green-600 font-medium mb-1">KES {actualPrice}</p>
+      <p className="text-red-600 line-through">KES{price}</p>
       {isDescriptionVisible && (
         <p className="text-sm text-gray-600 dark:text-gray-400 mb-3 mt-2 transition-all duration-300 ease-in-out">
           {description}
