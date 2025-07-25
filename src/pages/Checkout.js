@@ -114,7 +114,7 @@ const CheckoutPage = () => {
         </div>
 
         <img className="w-full h-48 object-cover my-4 rounded" src=
-            {https://back-gf-production.up.railway.app/api/uploads/${product.imageFile}} alt="Checkout Visual"/>
+            {`https://back-gf-production.up.railway.app/api/uploads/${product.imageFile}`} alt="Checkout Visual"/>
 
         <div className="mt-4">
           <label htmlFor="phone" className="block text-sm font-medium text-gray-700 mb-1">Phone Number</label>
