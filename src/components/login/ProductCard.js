@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const ProductCard = ({ product, onAdd }) => {
-  const { id, name, price, actualPrice, image, description } = product;
+  const { id, name, price, actualPrice, imageFile, description } = product;
   const [isDescriptionVisible, setIsDescriptionVisible] = useState(false);
 
   const toggleDescription = (e) => {
@@ -25,7 +25,7 @@ const ProductCard = ({ product, onAdd }) => {
     >
       <div className="top mb-3">
         <img
-          src={`https://back-gf-production.up.railway.app/uploads/${product.image}`}
+          src={`https://back-gf-production.up.railway.app/uploads/${product.imageFile}`}
           alt={name}
           className="w-full h-48 object-cover rounded-md mb-2"
         />
