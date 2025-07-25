@@ -9,6 +9,7 @@ const Products = () => {
     name: '',
     description: '',
     price: '',
+    actualPrice:'',
     stock: '',
   });
   const [imageFile, setImageFile] = useState(null);
@@ -20,6 +21,7 @@ const Products = () => {
     name: '',
     description: '',
     price: '',
+    actualPrice:'',
     stock: '',
     image: null,
   });
@@ -57,6 +59,7 @@ const Products = () => {
       formData.append('name', product.name);
       formData.append('description', product.description);
       formData.append('price', product.price);
+      formData.append('actualPrice', product.actualprice);
       formData.append('stock', stock);
       formData.append('imageFile', product.image);
 
@@ -102,6 +105,7 @@ const Products = () => {
     formData.append('name', newProduct.name);
     formData.append('description', newProduct.description);
     formData.append('price', newProduct.price);
+    formData.append('actualPrice', newProduct.actualPrice);
     formData.append('stock', newProduct.stock);
     if (imageFile) {
       formData.append('imageFile', imageFile);
@@ -116,7 +120,7 @@ const Products = () => {
         },
       });
       alert('Product added');
-      setNewProduct({ name: '', description: '', price: '', stock: '' });
+      setNewProduct({ name: '', description: '', price: '', actualPrice:'' , stock: '' });
       setImageFile(null);
       setImagePreview(null);
       fetchProducts();
@@ -131,6 +135,7 @@ const Products = () => {
       name: product.name,
       description: product.description,
       price: product.price,
+      actualPrice: product.actualPrice,
       stock: product.stock,
       image: product.image || null,
     });
@@ -144,6 +149,7 @@ const Products = () => {
       name: '',
       description: '',
       price: '',
+      actualPrice:'',
       stock: '',
       image: null,
     });
@@ -166,6 +172,7 @@ const Products = () => {
     formData.append('name', editProductData.name);
     formData.append('description', editProductData.description);
     formData.append('price', editProductData.price);
+    formData.append('actualPrice',editproductData.actualPrice);
     formData.append('stock', editProductData.stock);
     if (editImageFile) {
       formData.append('imageFile', editImageFile);
@@ -211,6 +218,14 @@ const Products = () => {
           <input type="number" placeholder="Price" value={newProduct.price}
             onChange={e => setNewProduct({ ...newProduct, price: e.target.value })}
             className="w-full p-2 border" required />
+          <input
+            type="number"
+            placeholder="Actual Price"
+            value={newProduct.actualPrice || ''}
+            onChange={e => setNewProduct({ ...newProduct, actualPrice: e.target.value })}
+            className="w-full p-2 border"
+            required
+          />
           <input type="number" placeholder="Stock" value={newProduct.stock}
             onChange={e => setNewProduct({ ...newProduct, stock: e.target.value })}
             className="w-full p-2 border" required />
@@ -250,6 +265,14 @@ const Products = () => {
                   <input type="number" value={editProductData.price}
                     onChange={e => setEditProductData({ ...editProductData, price: e.target.value })}
                     className="w-full p-1 border mb-1" />
+                  <input
+                    type="number"
+                    placeholder="actual Price"
+                    value={editProductData.actualPrice || ''}
+                    onChange={e => setEditProductData({ ...editProductData, actualPrice: e.target.value })}
+                    className="w-full p-2 border"
+                    required
+                  />
                   <input type="number" value={editProductData.stock}
                     onChange={e => setEditProductData({ ...editProductData, stock: e.target.value })}
                     className="w-full p-1 border mb-1" />
