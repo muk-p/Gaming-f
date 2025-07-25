@@ -25,7 +25,7 @@ const ProductCard = ({ product, onAdd }) => {
     >
       <div className="top mb-3">
         <img
-          src={`https://backend2-production-72ac.up.railway.app/${product.image}`}
+          src={`https://back-gf-production.up.railway.app/uploads/${product.image}`}
           alt={name}
           className="w-full h-48 object-cover rounded-md mb-2"
         />
