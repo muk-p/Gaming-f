@@ -12,7 +12,7 @@ const Products = () => {
     actualPrice:'',
     stock: '',
   });
-  const [imageFile, setImageFile] = useState(null);
+  const [imageFile1, setImageFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const { user } = useContext(AuthContext);
 
@@ -23,7 +23,7 @@ const Products = () => {
     price: '',
     actualPrice:'',
     stock: '',
-    image: null,
+    imageFile: null,
   });
   const [editImageFile, setEditImageFile] = useState(null);
   const [editImagePreview, setEditImagePreview] = useState(null);
@@ -61,7 +61,7 @@ const Products = () => {
       formData.append('price', product.price);
       formData.append('actualPrice', product.actualprice);
       formData.append('stock', stock);
-      formData.append('imageFile', product.image);
+      formData.append('imageFile1', product.imageFile);
 
       const token = localStorage.getItem('token');
       if (stock === 0 && user?.role === 'admin') {
@@ -107,8 +107,8 @@ const Products = () => {
     formData.append('price', newProduct.price);
     formData.append('actualPrice', newProduct.actualPrice);
     formData.append('stock', newProduct.stock);
-    if (imageFile) {
-      formData.append('imageFile', imageFile);
+    if (imageFile1) {
+      formData.append('imageFile1', imageFile1);
     }
 
     try {
@@ -137,7 +137,7 @@ const Products = () => {
       price: product.price,
       actualPrice: product.actualPrice,
       stock: product.stock,
-      image: product.image || null,
+      image: product.imageFile || null,
     });
     setEditImageFile(null);
     setEditImagePreview(null);
@@ -151,7 +151,7 @@ const Products = () => {
       price: '',
       actualPrice:'',
       stock: '',
-      image: null,
+      imageFile: null,
     });
     setEditImageFile(null);
     setEditImagePreview(null);
@@ -175,9 +175,9 @@ const Products = () => {
     formData.append('actualPrice',editProductData.actualPrice);
     formData.append('stock', editProductData.stock);
     if (editImageFile) {
-      formData.append('imageFile', editImageFile);
-    } else if (editProductData.image) {
-      formData.append('imageFile', editProductData.image);
+      formData.append('imageFile1', editImageFile);
+    } else if (editProductData.imageFile) {
+      formData.append('imageFile1', editProductData.imageFile);
     }
 
     try {
@@ -250,7 +250,7 @@ const Products = () => {
       <div className="products-grid">
         {filterProducts().map(product => {
           const isEditing = editingProductId === product.id;
-          const { id, name, description, price, stock, image } = product;
+          const { id, name, description, price, stock, imageFile } = product;
 
           return (
             <div key={id} className="products-card1 border p-3 mb-3 rounded">
@@ -283,7 +283,7 @@ const Products = () => {
                   ) : (
                     editProductData.image && (
                       <img
-                        src={`https://back-gf-production.up.railway.app/uploads/${editProductData.image}`}
+                        src={`https://back-gf-production.up.railway.app/uploads/${editProductData.imageFile}`}
                         alt="Current"
                         className="w-24 h-24 object-cover"
                       />
@@ -300,7 +300,7 @@ const Products = () => {
                 <>
                   <h2 className="font-semibold mb-2">{name} - KES {price}</h2>
                   <img
-                    src={`https://back-gf-production.up.railway.app/uploads/${image}`}
+                    src={`https://back-gf-production.up.railway.app/uploads/${imageFile}`}
                     alt={name}
                     className="w-24 h-24 object-cover rounded mb-2"
                   />
