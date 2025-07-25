@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 const ProductCard = ({ product, onAdd }) => {
-  const { id, name, price, imageUrl, description } = product;
+  const { id, name, price, actualPrice, image, description } = product;
   const [isDescriptionVisible, setIsDescriptionVisible] = useState(false);
 
   const toggleDescription = (e) => {
