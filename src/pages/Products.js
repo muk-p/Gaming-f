@@ -172,7 +172,7 @@ const Products = () => {
     formData.append('name', editProductData.name);
     formData.append('description', editProductData.description);
     formData.append('price', editProductData.price);
-    formData.append('actualPrice',editproductData.actualPrice);
+    formData.append('actualPrice',editProductData.actualPrice);
     formData.append('stock', editProductData.stock);
     if (editImageFile) {
       formData.append('imageFile', editImageFile);
