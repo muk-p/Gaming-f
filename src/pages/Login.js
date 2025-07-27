@@ -11,6 +11,8 @@ import ProductCard from '../components/login/ProductCard';
 
 const LoginPage = () => {
   const { login } = useContext(AuthContext);
+  const navigate = useNavigate();
+
   const [showLogin, setShowLogin] = useState(false);
   const [showCart, setShowCart] = useState(false);
   const [showTab, setShowTab] = useState(false);
@@ -27,8 +29,6 @@ const LoginPage = () => {
     }
   });
 
-  const navigate = useNavigate();
-
   useEffect(() => {
     axios.get('/products')
       .then(res => setProducts(res.data))
@@ -40,17 +40,16 @@ const LoginPage = () => {
   }, [cart]);
 
   useEffect(() => {
-    if (showLogin || showCart || showTab) {
-      document.body.style.overflow = 'hidden';
-      return () => { document.body.style.overflow = ''; };
-    }
+    const shouldLockScroll = showLogin || showCart || showTab;
+    document.body.style.overflow = shouldLockScroll ? 'hidden' : '';
+    return () => (document.body.style.overflow = '');
   }, [showLogin, showCart, showTab]);
 
-const filteredProducts = Array.isArray(products)
-  ? products.filter(product =>
-      product.name.toLowerCase().includes(searchTerm.toLowerCase())
-    )
-  : [];
+  const filteredProducts = Array.isArray(products)
+    ? products.filter(p =>
+        p.name.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : [];
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -84,92 +83,95 @@ const filteredProducts = Array.isArray(products)
 
   const customAlert = (message, duration = 2000) => {
     const alertBox = document.createElement('div');
-    alertBox.className = 'custom-alert';
-    alertBox.innerHTML = `<div>${message}</div><div class="progress-bar" id="alert-progress"></div>`;
+    alertBox.className = 'fixed top-5 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded shadow-lg z-50 animate-fadeIn';
+    alertBox.innerHTML = `<span>${message}</span>`;
     document.body.appendChild(alertBox);
-    const progress = alertBox.querySelector('#alert-progress');
+
     setTimeout(() => {
-      progress.style.transition = `width ${duration}ms linear`;
-      progress.style.width = '100%';
-    }, 10);
-    setTimeout(() => {
-      alertBox.remove();
+      alertBox.classList.add('opacity-0');
+      setTimeout(() => alertBox.remove(), 300);
     }, duration);
   };
 
-
-
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white">
-  <Navbar
-    searchTerm={searchTerm}
-    setSearchTerm={setSearchTerm}
-    filteredProducts={filteredProducts}
-    toggleLogin={() => setShowLogin(!showLogin)}
-    toggleCart={() => setShowCart(!showCart)}
-    cartLength={cart.length}
-  />
+    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white transition-all">
 
-  {showLogin && (
-    <LoginForm
-      email={email}
-      setEmail={setEmail}
-      password={password}
-      setPassword={setPassword}
-      onClose={() => setShowLogin(false)}
-      onSubmit={handleSubmit}
-    />
-  )}
+      <Navbar
+        searchTerm={searchTerm}
+        setSearchTerm={setSearchTerm}
+        filteredProducts={filteredProducts}
+        toggleLogin={() => setShowLogin(true)}
+        toggleCart={() => setShowCart(true)}
+        cartLength={cart.length}
+      />
 
-  {showTab && <NavigationTab navigate={navigate} close={() => setShowTab(false)} />}
+      {showLogin && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+          <LoginForm
+            email={email}
+            setEmail={setEmail}
+            password={password}
+            setPassword={setPassword}
+            onClose={() => setShowLogin(false)}
+            onSubmit={handleSubmit}
+          />
+        </div>
+      )}
 
-  {showCart && (
-    <CartOverlay
-      cart={cart}
-      total={total}
-      onRemove={handleRemove}
-      onClose={() => setShowCart(false)}
-    />
-  )}
-
-  <div className="hero-section  flex flex-col md:flex-row items-center justify-between pt-20 pb-6 bg-[url('https://images.unsplash.com/photo-1705910308295-439693a18f50?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')]
-   bg-cover bg-center dark:bg-gray-800 shadow-md">
-    <div className="text mb-4 md:mb-0">
-      <h1 className="text-3xl text-grey md:text-4xl font-bold mb-2">Welcome to the Gaming Store</h1>
-      <p className="text-lg text-grey dark:text-gray-300">
-        Your one-stop shop for all gaming needs
-      </p>
-    </div>
-    <img
-      src="https://images.unsplash.com/photo-1604846887565-640d2f52d564?q=80&w=1631&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-      alt="A modern gaming setup."
-      className="w-full md:w-1/2 h-64 object-cover rounded-md shadow"
-    />
-  </div>
-
-  <div className="products-container px-6 py-8 flex-1">
-    <h2 className="text-2xl font-semibold mb-6">Available Products</h2>
-    <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {filteredProducts.map(product => (
-        <ProductCard
-          key={product.id}
-          product={product}
-          onAdd={() => {
-            handleBuy(product);
-            customAlert('Product added to cart', 2000);
-          }}
+      {showTab && (
+        <NavigationTab
+          navigate={navigate}
+          close={() => setShowTab(false)}
         />
-      ))}
+      )}
+
+      {showCart && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+          <CartOverlay
+            cart={cart}
+            total={total}
+            onRemove={handleRemove}
+            onClose={() => setShowCart(false)}
+          />
+        </div>
+      )}
+
+      <div className="hero-section flex flex-col md:flex-row items-center justify-between pt-20 pb-6 bg-[url('https://images.unsplash.com/photo-1705910308295-439693a18f50?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center dark:bg-gray-800 shadow-md">
+        <div className="px-6 md:w-1/2 mb-6 md:mb-0">
+          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900 dark:text-white">Welcome to the Gaming Store</h1>
+          <p className="text-lg text-gray-700 dark:text-gray-300">
+            Your one-stop shop for all gaming needs
+          </p>
+        </div>
+        <img
+          src="https://images.unsplash.com/photo-1604846887565-640d2f52d564?q=80&w=1631&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
+          alt="A modern gaming setup."
+          className="w-full md:w-1/2 h-64 object-cover rounded-md shadow-lg"
+        />
+      </div>
+
+      <div className="products-container px-6 py-8 flex-1">
+        <h2 className="text-2xl font-semibold mb-6">Available Products</h2>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {filteredProducts.map(product => (
+            <ProductCard
+              key={product.id}
+              product={product}
+              onAdd={() => {
+                handleBuy(product);
+                customAlert('Product added to cart');
+              }}
+            />
+          ))}
+        </div>
+      </div>
+
+      <footer className="bg-gray-200 dark:bg-gray-800 text-center py-4 mt-8 shadow-inner">
+        <p className="text-sm text-gray-700 dark:text-gray-400">
+          &copy; 2025 Gaming Store. All rights reserved.
+        </p>
+      </footer>
     </div>
-  </div>
-
-  <footer className="bg-gray-200 dark:bg-gray-800 text-center py-4 mt-8 shadow-inner">
-    <p className="text-sm text-gray-700 dark:text-gray-400">
-      &copy; 2025 Gaming Store. All rights reserved.
-    </p>
-  </footer>
-</div>
-
   );
 };
 
