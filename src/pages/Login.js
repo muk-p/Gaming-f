@@ -86,7 +86,6 @@ const LoginPage = () => {
     alertBox.className = 'fixed top-5 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded shadow-lg z-50 animate-fadeIn';
     alertBox.innerHTML = `<span>${message}</span>`;
     document.body.appendChild(alertBox);
-
     setTimeout(() => {
       alertBox.classList.add('opacity-0');
       setTimeout(() => alertBox.remove(), 300);
@@ -94,7 +93,7 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white transition-all">
+    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white">
 
       <Navbar
         searchTerm={searchTerm}
@@ -136,21 +135,46 @@ const LoginPage = () => {
         </div>
       )}
 
-      <div className="hero-section flex flex-col md:flex-row items-center justify-between pt-20 pb-6 bg-[url('https://images.unsplash.com/photo-1705910308295-439693a18f50?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D')] bg-cover bg-center dark:bg-gray-800 shadow-md">
-        <div className="px-6 md:w-1/2 mb-6 md:mb-0">
-          <h1 className="text-3xl md:text-4xl font-bold mb-2 text-gray-900 dark:text-white">Welcome to the Gaming Store</h1>
-          <p className="text-lg text-gray-700 dark:text-gray-300">
-            Your one-stop shop for all gaming needs
-          </p>
-        </div>
+      {/* HERO SECTION */}
+      <section className="relative flex flex-col md:flex-row items-center justify-between pt-24 pb-10 overflow-hidden bg-gray-900 text-white">
+        {/* Background */}
         <img
-          src="https://images.unsplash.com/photo-1604846887565-640d2f52d564?q=80&w=1631&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
-          alt="A modern gaming setup."
-          className="w-full md:w-1/2 h-64 object-cover rounded-md shadow-lg"
+          src="https://images.unsplash.com/photo-1604846887565-640d2f52d564?q=80&w=1631&auto=format&fit=crop&ixlib=rb-4.0.3"
+          alt="Gaming background"
+          className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
-      </div>
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 via-gray-900/20 to-gray-900/90" />
 
-      <div className="products-container px-6 py-8 flex-1">
+        {/* Hero Content */}
+        <div className="relative z-10 px-6 md:w-1/2 space-y-5">
+          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
+            Level-Up&nbsp;Your&nbsp;Gaming&nbsp;Experience
+          </h1>
+          <p className="text-lg md:text-xl text-gray-300 max-w-md">
+            Discover the latest gear, unbeatable deals and lightning‑fast delivery — all in one place.
+          </p>
+          <button
+            onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
+            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 transition active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400"
+          >
+            Shop Now
+            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24">
+              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
+                d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </button>
+        </div>
+
+        {/* Hero Image */}
+        <img
+          src="https://images.unsplash.com/photo-1705910308295-439693a18f50?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0"
+          alt="Gaming setup"
+          className="relative z-10 w-full md:w-1/2 max-h-80 object-cover rounded-xl shadow-2xl mt-8 md:mt-0"
+        />
+      </section>
+
+      {/* PRODUCTS */}
+      <div id="products" className="products-container px-6 py-8 flex-1">
         <h2 className="text-2xl font-semibold mb-6">Available Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.map(product => (
