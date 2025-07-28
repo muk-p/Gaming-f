@@ -20,7 +20,7 @@ const CartOverlay = ({ cart, total, onRemove, onClose }) => {
                 <div>
                   <p className="font-medium text-gray-800">{item.name}</p>
                   <p className="text-sm text-gray-600">
-                    {item.qty} × KES {item.price}
+                    {item.qty} × KES {item.actualPrice}
                   </p>
                 </div>
                 <button
