@@ -17,7 +17,7 @@ const CheckoutPage = () => {
       setAmount(total);
     } else {
       const storedCart = JSON.parse(localStorage.getItem("cart")) || [];
-      const storedTotal = storedCart.reduce((sum, item) => sum + item.price * item.qty, 0);
+      const storedTotal = storedCart.reduce((sum, item) => sum + item.actualPrice * item.qty, 0);
       setLocalCart(storedCart);
       setLocalTotal(storedTotal);
       setAmount(storedTotal);
@@ -94,11 +94,11 @@ const CheckoutPage = () => {
                   <div>
                     <p className="font-medium text-gray-800">{item.name}</p>
                     <p className="text-sm text-gray-600">
-                      {item.qty || item.quantity} × KES {item.price}
+                      {item.qty || item.quantity} × KES {item.actualPrice}
                     </p>
                   </div>
                   <p className="font-medium text-gray-800">
-                    KES {(item.qty || item.quantity) * item.price}
+                    KES {(item.qty || item.quantity) * item.actualPrice}
                   </p>
                 </li>
               ))}
