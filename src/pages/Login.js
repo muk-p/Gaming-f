@@ -13,17 +13,13 @@ const LoginPage = () => {
   const { login } = useContext(AuthContext);
   const navigate = useNavigate();
 
-  const [showLogin, setShowLogin] = useState(false);
-  const [showCart, setShowCart] = useState(false);
-  const [showTab, setShowTab] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [modals, setModals] = useState({ login: false, cart: false, tab: false });
+  const [form, setForm] = useState({ email: '', password: '' });
   const [products, setProducts] = useState([]);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [search, setSearch] = useState('');
   const [cart, setCart] = useState(() => {
     try {
-      const stored = localStorage.getItem('cart');
-      return stored ? JSON.parse(stored) : [];
+      return JSON.parse(localStorage.getItem('cart')) || [];
     } catch {
       return [];
     }
@@ -32,171 +28,144 @@ const LoginPage = () => {
   useEffect(() => {
     axios.get('/products')
       .then(res => setProducts(res.data))
-      .catch(() => alert('Failed to load products'));
+      .catch(() => alert('Could not load products'));
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('cart', JSON.stringify(cart));
-  }, [cart]);
+  useEffect(() => localStorage.setItem('cart', JSON.stringify(cart)), [cart]);
 
   useEffect(() => {
-    const shouldLockScroll = showLogin || showCart || showTab;
-    document.body.style.overflow = shouldLockScroll ? 'hidden' : '';
+    const lock = modals.login || modals.cart || modals.tab;
+    document.body.style.overflow = lock ? 'hidden' : '';
     return () => (document.body.style.overflow = '');
-  }, [showLogin, showCart, showTab]);
+  }, [modals]);
 
-  const filteredProducts = Array.isArray(products)
-    ? products.filter(p =>
-        p.name.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : [];
+  const filteredProducts = products.filter(p =>
+    p.name.toLowerCase().includes(search.toLowerCase())
+  );
 
-  const handleSubmit = async (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('/auth/login', { email, password });
+      const res = await axios.post('/auth/login', form);
       login(res.data.token);
-      setShowLogin(false);
-      setEmail('');
-      setPassword('');
-      setShowTab(true);
+      setModals({ login: false, cart: false, tab: true });
+      setForm({ email: '', password: '' });
     } catch {
       alert('Login failed');
     }
   };
 
-  const handleBuy = (product) => {
+  const handleAddToCart = (product) => {
     setCart(prev => {
       const exists = prev.find(i => i.id === product.id);
       return exists
         ? prev.map(i => i.id === product.id ? { ...i, qty: i.qty + 1 } : i)
         : [...prev, { ...product, qty: 1 }];
     });
-    setShowCart(false);
+    showAlert('Added to cart');
+    setModals(prev => ({ ...prev, cart: false }));
   };
 
-  const handleRemove = (id) => {
-    setCart(prev => prev.filter(i => i.id !== id));
-  };
+  const handleRemove = (id) => setCart(prev => prev.filter(i => i.id !== id));
 
   const total = cart.reduce((sum, i) => sum + i.qty * i.price, 0);
 
-  const customAlert = (message, duration = 2000) => {
-    const alertBox = document.createElement('div');
-    alertBox.className = 'fixed top-5 left-1/2 transform -translate-x-1/2 bg-blue-600 text-white px-6 py-3 rounded shadow-lg z-50 animate-fadeIn';
-    alertBox.innerHTML = `<span>${message}</span>`;
-    document.body.appendChild(alertBox);
-    setTimeout(() => {
-      alertBox.classList.add('opacity-0');
-      setTimeout(() => alertBox.remove(), 300);
-    }, duration);
+  const showAlert = (message) => {
+    const el = document.createElement('div');
+    el.className = 'fixed top-4 left-1/2 -translate-x-1/2 bg-blue-600 text-white px-4 py-2 rounded shadow z-50';
+    el.innerText = message;
+    document.body.appendChild(el);
+    setTimeout(() => el.remove(), 2000);
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-white">
+    <div className="min-h-screen flex flex-col bg-white text-gray-800">
 
       <Navbar
-        searchTerm={searchTerm}
-        setSearchTerm={setSearchTerm}
+        searchTerm={search}
+        setSearchTerm={setSearch}
         filteredProducts={filteredProducts}
-        toggleLogin={() => setShowLogin(true)}
-        toggleCart={() => setShowCart(true)}
+        toggleLogin={() => setModals(prev => ({ ...prev, login: true }))}
+        toggleCart={() => setModals(prev => ({ ...prev, cart: true }))}
         cartLength={cart.length}
       />
 
-      {showLogin && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+      {modals.login && (
+        <Modal>
           <LoginForm
-            email={email}
-            setEmail={setEmail}
-            password={password}
-            setPassword={setPassword}
-            onClose={() => setShowLogin(false)}
-            onSubmit={handleSubmit}
+            email={form.email}
+            setEmail={v => setForm(f => ({ ...f, email: v }))}
+            password={form.password}
+            setPassword={v => setForm(f => ({ ...f, password: v }))}
+            onClose={() => setModals(prev => ({ ...prev, login: false }))}
+            onSubmit={handleLogin}
           />
-        </div>
+        </Modal>
       )}
 
-      {showTab && (
-        <NavigationTab
-          navigate={navigate}
-          close={() => setShowTab(false)}
-        />
-      )}
+      {modals.tab && <NavigationTab navigate={navigate} close={() => setModals(prev => ({ ...prev, tab: false }))} />}
 
-      {showCart && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+      {modals.cart && (
+        <Modal>
           <CartOverlay
             cart={cart}
             total={total}
             onRemove={handleRemove}
-            onClose={() => setShowCart(false)}
+            onClose={() => setModals(prev => ({ ...prev, cart: false }))}
           />
-        </div>
+        </Modal>
       )}
 
-      {/* HERO SECTION */}
-      <section className="relative flex flex-col md:flex-row items-center justify-between pt-24 pb-10 overflow-hidden bg-gray-900 text-white">
-        {/* Background */}
+      {/* HERO */}
+      <section className="relative flex flex-col md:flex-row items-center justify-between pt-24 pb-12 bg-gray-900 text-white">
         <img
-          src="https://images.unsplash.com/photo-1604846887565-640d2f52d564?q=80&w=1631&auto=format&fit=crop&ixlib=rb-4.0.3"
-          alt="Gaming background"
+          src="https://images.unsplash.com/photo-1604846887565-640d2f52d564?q=80"
+          alt="Background"
           className="absolute inset-0 w-full h-full object-cover opacity-30"
         />
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/90 via-gray-900/20 to-gray-900/90" />
-
-        {/* Hero Content */}
+        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-gray-900/30 to-gray-900/80" />
         <div className="relative z-10 px-6 md:w-1/2 space-y-5">
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
-            Level-Up&nbsp;Your&nbsp;Gaming&nbsp;Experience
-          </h1>
-          <p className="text-lg md:text-xl text-gray-300 max-w-md">
-            Discover the latest gear, unbeatable deals and lightning‑fast delivery — all in one place.
-          </p>
+          <h1 className="text-4xl md:text-5xl font-bold">Level-Up Your Gaming Experience</h1>
+          <p className="text-lg text-gray-300">Latest gear, unbeatable deals & fast delivery in one place.</p>
           <button
             onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
-            className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-blue-600 hover:bg-blue-700 transition active:scale-95 focus:outline-none focus:ring-2 focus:ring-blue-400"
+            className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-full text-white transition"
           >
             Shop Now
-            <svg xmlns="http://www.w3.org/2000/svg" className="w-5 h-5" fill="none" viewBox="0 0 24 24">
-              <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                d="M17 8l4 4m0 0l-4 4m4-4H3" />
-            </svg>
           </button>
         </div>
-
-        {/* Hero Image */}
         <img
-          src="https://images.unsplash.com/photo-1705910308295-439693a18f50?q=80&w=1032&auto=format&fit=crop&ixlib=rb-4.1.0"
-          alt="Gaming setup"
-          className="relative z-10 w-full md:w-1/2 max-h-80 object-cover rounded-xl shadow-2xl mt-8 md:mt-0"
+          src="https://images.unsplash.com/photo-1705910308295-439693a18f50?q=80"
+          alt="Setup"
+          className="relative z-10 w-full md:w-1/2 max-h-80 object-cover rounded-xl mt-8 md:mt-0"
         />
       </section>
 
       {/* PRODUCTS */}
-      <div id="products" className="products-container px-6 py-8 flex-1">
+      <div id="products" className="px-6 py-8">
         <h2 className="text-2xl font-semibold mb-6">Available Products</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {filteredProducts.map(product => (
             <ProductCard
               key={product.id}
               product={product}
-              onAdd={() => {
-                handleBuy(product);
-                customAlert('Product added to cart');
-              }}
+              onAdd={() => handleAddToCart(product)}
             />
           ))}
         </div>
       </div>
 
-      <footer className="bg-gray-200 dark:bg-gray-800 text-center py-4 mt-8 shadow-inner">
-        <p className="text-sm text-gray-700 dark:text-gray-400">
-          &copy; 2025 Gaming Store. All rights reserved.
-        </p>
+      <footer className="bg-gray-100 text-center py-4 mt-8">
+        <p className="text-sm text-gray-600">&copy; 2025 Gaming Store. All rights reserved.</p>
       </footer>
     </div>
   );
 };
+
+const Modal = ({ children }) => (
+  <div className="fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+    {children}
+  </div>
+);
 
 export default LoginPage;
