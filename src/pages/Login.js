@@ -68,7 +68,7 @@ const LoginPage = () => {
 
   const handleRemove = (id) => setCart(prev => prev.filter(i => i.id !== id));
 
-  const total = cart.reduce((sum, i) => sum + i.qty * i.price, 0);
+  const total = cart.reduce((sum, i) => sum + i.qty * i.actualPrice, 0);
 
   const showAlert = (message) => {
     const el = document.createElement('div');
