@@ -117,6 +117,7 @@ const LoginPage = () => {
       )}
 
       {/* HERO */}
+      <div className="pt-[80px]">
       <section className="relative flex flex-col md:flex-row items-center justify-between pt-24 pb-12 bg-gray-900 text-white">
         <img
           src="https://images.unsplash.com/photo-1604846887565-640d2f52d564?q=80"
@@ -140,6 +141,7 @@ const LoginPage = () => {
           className="relative z-10 w-full md:w-1/2 max-h-80 object-cover rounded-xl mt-8 md:mt-0"
         />
       </section>
+            </div>
 
       {/* PRODUCTS */}
       <div id="products" className="px-6 py-8">
