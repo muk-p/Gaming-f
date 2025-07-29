@@ -84,9 +84,10 @@ const Products = () => {
       });
       alert('Stock updated');
       fetchProducts();
-    } catch (err) {
-      alert('Failed to update stock');
-    }
+    }catch (err) {
+  console.error(err?.response?.data || err.message);
+  alert('Failed to update stock');
+}
   };
 
   const handleImageChange = (e) => {
