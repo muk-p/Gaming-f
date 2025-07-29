@@ -53,26 +53,14 @@ const Sales = () => {
     }
   };
 
-  // Calculate total sales from the report data if available, otherwise from sales list (less accurate)
   const calculateTotalSales = () => {
-    if (report && report.breakdown) {
+    if (Array.isArray(report?.breakdown)) {
       return report.breakdown.reduce((sum, item) => sum + Number(item.total_revenue || 0), 0);
     }
-    // Fallback: This might be inaccurate if 'sales' items don't have price or if revenue means something else.
-    // It's better to rely on the aggregated report.
-    // For individual sales, we'd need product price at the time of sale.
-    // The existing 'sales' array seems to lack individual revenue or price.
-    // The original `totalSales` was: sales.reduce((sum, item) => sum + Number(item.revenue || 0), 0);
-    // This implies 'sales' items might have a 'revenue' field from the backend.
-    // If sales items are guaranteed to have a 'revenue' field:
     return sales.reduce((sum, item) => sum + Number(item.revenue || 0), 0);
-    // If not, and we must calculate from sales:
-    // This would require sales items to have price and quantity, e.g., item.price * item.quantity
-    // return sales.reduce((sum, item) => sum + (Number(item.price || 0) * Number(item.quantity || 0)), 0);
   };
 
   const totalSales = calculateTotalSales();
-
 
   useEffect(() => {
     fetchProducts();
@@ -81,7 +69,7 @@ const Sales = () => {
   }, [user?.role]);
 
   useEffect(() => {
-    if (user?.role === 'admin' && report?.daily && chartRef.current) {
+    if (user?.role === 'admin' && Array.isArray(report?.daily) && chartRef.current) {
       if (chartInstanceRef.current) {
         chartInstanceRef.current.destroy();
       }
@@ -144,7 +132,7 @@ const Sales = () => {
             </tr>
           </thead>
           <tbody>
-            {sales.map((sale, index) => (
+            {Array.isArray(sales) && sales.map((sale, index) => (
               <tr key={index} className="hover:bg-gray-50">
                 <td className="border px-4 py-2">{sale.product_name}</td>
                 <td className="border px-4 py-2">{sale.quantity} pcs</td>
@@ -158,7 +146,9 @@ const Sales = () => {
       {user?.role === 'admin' && report && (
         <div className="mt-10">
           <h2 className="text-2xl font-semibold mb-4">Sales Report (Admin Only)</h2>
-          <p className="mb-2 text-lg">Total Sales: <strong>KES {Number(totalSales).toLocaleString('en-KE', { minimumFractionDigits: 2 })}</strong></p>
+          <p className="mb-2 text-lg">
+            Total Sales: <strong>KES {Number(totalSales).toLocaleString('en-KE', { minimumFractionDigits: 2 })}</strong>
+          </p>
 
           <div className="overflow-x-auto">
             <table className="w-full text-sm border shadow">
@@ -170,7 +160,7 @@ const Sales = () => {
                 </tr>
               </thead>
               <tbody>
-                {report.breakdown.map((item, idx) => (
+                {Array.isArray(report.breakdown) && report.breakdown.map((item, idx) => (
                   <tr key={idx} className="hover:bg-gray-50">
                     <td className="p-2 border">{item.product_name}</td>
                     <td className="p-2 border">{item.total_quantity}</td>
@@ -192,3 +182,4 @@ const Sales = () => {
 };
 
 export default Sales;
+
