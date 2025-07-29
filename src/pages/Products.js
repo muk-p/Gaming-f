@@ -299,7 +299,7 @@ const Products = () => {
                 </>
               ) : (
                 <>
-                  <h2 className="font-semibold mb-2">{name} - KES {actualPrice}</h2>
+                  <h2 className="font-semibold mb-2">{name} - KES {product.actualPrice}</h2>
                   <img
                     src={`https://back-gf-production.up.railway.app/uploads/${imageFile}`}
                     alt={name}
