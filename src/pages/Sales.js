@@ -9,7 +9,6 @@ const Sales = () => {
   const [sales, setSales] = useState([]);
   const [selected, setSelected] = useState('');
   const [quantity, setQuantity] = useState(1);
-  const [report, setReport] = useState(null);
   const { user } = useContext(AuthContext);
   const chartRef = useRef(null);
   const chartInstanceRef = useRef(null);
@@ -26,18 +25,14 @@ const Sales = () => {
   const fetchSales = async () => {
     try {
       const res = await axios.get('/sales');
-      setSales(res.data);
+      const recentSales = res.data.filter(sale => {
+        const saleDate = new Date(sale.createdAt);
+        const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+        return saleDate >= thirtyDaysAgo;
+      });
+      setSales(recentSales);
     } catch {
       alert('Failed to load sales');
-    }
-  };
-
-  const fetchReport = async () => {
-    try {
-      const res = await axios.get('/sales/report');
-      setReport(res.data);
-    } catch {
-      alert('Failed to load sales report');
     }
   };
 
@@ -47,26 +42,55 @@ const Sales = () => {
       await axios.post('/sales', { productId: selected, quantity });
       alert('Sale recorded');
       fetchSales();
-      if (user?.role === 'admin') fetchReport();
     } catch {
       alert('Failed to record sale');
     }
   };
 
-  const calculateTotalSales = () => {
-    if (report?.breakdown && Array.isArray(report.breakdown)) {
-      return report.breakdown.reduce((sum, item) => sum + Number(item.total_revenue || 0), 0);
+  const buildReport = () => {
+    const breakdown = {};
+    const daily = {};
+
+    for (const sale of sales) {
+      const name = sale.Product?.name || 'Unknown';
+      const dateKey = new Date(sale.createdAt).toISOString().split('T')[0];
+      const revenue = Number(sale.totalPrice || 0);
+      const qty = Number(sale.quantity || 0);
+
+      // Breakdown by product
+      if (!breakdown[name]) {
+        breakdown[name] = { total_quantity: 0, total_revenue: 0 };
+      }
+      breakdown[name].total_quantity += qty;
+      breakdown[name].total_revenue += revenue;
+
+      // Daily sales
+      if (!daily[dateKey]) {
+        daily[dateKey] = 0;
+      }
+      daily[dateKey] += revenue;
     }
-    return sales.reduce((sum, s) => sum + Number(s.totalPrice || 0), 0);
+
+    return {
+      breakdown: Object.entries(breakdown).map(([product_name, data]) => ({
+        product_name,
+        ...data,
+      })),
+      daily: Object.entries(daily).map(([date, total_sales]) => ({
+        date,
+        total_sales,
+      })).sort((a, b) => new Date(a.date) - new Date(b.date)),
+    };
   };
 
-  const totalSales = calculateTotalSales();
+  const report = user?.role === 'admin' ? buildReport() : null;
+
+  const totalSales = report?.breakdown.reduce((sum, item) => sum + item.total_revenue, 0) || 0;
 
   useEffect(() => {
     fetchProducts();
     fetchSales();
-    if (user?.role === 'admin') fetchReport();
-  }, [user?.role]);
+  }, []);
 
   useEffect(() => {
     if (user?.role === 'admin' && report?.daily && chartRef.current) {
@@ -90,7 +114,7 @@ const Sales = () => {
         }
       });
     }
-  }, [report, user?.role]);
+  }, [report]);
 
   return (
     <div className="p-4 max-w-5xl mx-auto text-gray-800">
@@ -115,7 +139,7 @@ const Sales = () => {
         </button>
       </div>
 
-      <h2 className="text-2xl font-semibold mb-4">Recent Sales</h2>
+      <h2 className="text-2xl font-semibold mb-4">Recent Sales (Last 30 Days)</h2>
       <div className="overflow-x-auto">
         <table className="w-full border-collapse shadow text-sm">
           <thead>
@@ -127,7 +151,7 @@ const Sales = () => {
             </tr>
           </thead>
           <tbody>
-            {Array.isArray(sales) && sales.map((sale, index) => (
+            {sales.map((sale, index) => (
               <tr key={index} className="hover:bg-gray-50">
                 <td className="border px-4 py-2">{sale.Product?.name || '—'}</td>
                 <td className="border px-4 py-2">{sale.quantity} pcs</td>
@@ -156,7 +180,7 @@ const Sales = () => {
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(report?.breakdown) && report.breakdown.map((item, idx) => (
+                {report.breakdown.map((item, idx) => (
                   <tr key={idx} className="hover:bg-gray-50">
                     <td className="p-2 border">{item.product_name}</td>
                     <td className="p-2 border">{item.total_quantity}</td>
