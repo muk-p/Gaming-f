@@ -59,7 +59,7 @@ const Products = () => {
       formData.append('name', product.name);
       formData.append('description', product.description);
       formData.append('price', product.price);
-      formData.append('actualPrice', product.actualprice);
+      formData.append('actualPrice', product.actualPrice);
       formData.append('stock', stock);
       formData.append('imageFile1', product.imageFile);
 
