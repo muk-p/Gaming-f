@@ -18,7 +18,7 @@ const Sales = () => {
     try {
       const res = await axios.get('/products');
       setProducts(res.data);
-    } catch (err) {
+    } catch {
       alert('Failed to load products');
     }
   };
@@ -27,7 +27,7 @@ const Sales = () => {
     try {
       const res = await axios.get('/sales');
       setSales(res.data);
-    } catch (err) {
+    } catch {
       alert('Failed to load sales');
     }
   };
@@ -36,7 +36,7 @@ const Sales = () => {
     try {
       const res = await axios.get('/sales/report');
       setReport(res.data);
-    } catch (err) {
+    } catch {
       alert('Failed to load sales report');
     }
   };
@@ -48,16 +48,16 @@ const Sales = () => {
       alert('Sale recorded');
       fetchSales();
       if (user?.role === 'admin') fetchReport();
-    } catch (err) {
+    } catch {
       alert('Failed to record sale');
     }
   };
 
   const calculateTotalSales = () => {
-    if (Array.isArray(report?.breakdown)) {
+    if (report?.breakdown && Array.isArray(report.breakdown)) {
       return report.breakdown.reduce((sum, item) => sum + Number(item.total_revenue || 0), 0);
     }
-    return sales.reduce((sum, item) => sum + Number(item.revenue || 0), 0);
+    return sales.reduce((sum, s) => sum + Number(s.totalPrice || 0), 0);
   };
 
   const totalSales = calculateTotalSales();
@@ -69,10 +69,8 @@ const Sales = () => {
   }, [user?.role]);
 
   useEffect(() => {
-    if (user?.role === 'admin' && Array.isArray(report?.daily) && chartRef.current) {
-      if (chartInstanceRef.current) {
-        chartInstanceRef.current.destroy();
-      }
+    if (user?.role === 'admin' && report?.daily && chartRef.current) {
+      if (chartInstanceRef.current) chartInstanceRef.current.destroy();
       chartInstanceRef.current = new Chart(chartRef.current, {
         type: 'line',
         data: {
@@ -88,11 +86,7 @@ const Sales = () => {
         },
         options: {
           responsive: true,
-          scales: {
-            y: {
-              beginAtZero: true
-            }
-          }
+          scales: { y: { beginAtZero: true } }
         }
       });
     }
@@ -128,15 +122,17 @@ const Sales = () => {
             <tr className="bg-gray-100">
               <th className="border px-4 py-2 text-left">Product Name</th>
               <th className="border px-4 py-2 text-left">Quantity</th>
+              <th className="border px-4 py-2 text-left">Total Price</th>
               <th className="border px-4 py-2 text-left">Timestamp</th>
             </tr>
           </thead>
           <tbody>
             {Array.isArray(sales) && sales.map((sale, index) => (
               <tr key={index} className="hover:bg-gray-50">
-                <td className="border px-4 py-2">{sale.product_name}</td>
+                <td className="border px-4 py-2">{sale.Product?.name || '—'}</td>
                 <td className="border px-4 py-2">{sale.quantity} pcs</td>
-                <td className="border px-4 py-2">{new Date(sale.timestamp).toLocaleString()}</td>
+                <td className="border px-4 py-2">KES {Number(sale.totalPrice).toLocaleString()}</td>
+                <td className="border px-4 py-2">{new Date(sale.createdAt).toLocaleString()}</td>
               </tr>
             ))}
           </tbody>
@@ -160,7 +156,7 @@ const Sales = () => {
                 </tr>
               </thead>
               <tbody>
-                {Array.isArray(report.breakdown) && report.breakdown.map((item, idx) => (
+                {Array.isArray(report?.breakdown) && report.breakdown.map((item, idx) => (
                   <tr key={idx} className="hover:bg-gray-50">
                     <td className="p-2 border">{item.product_name}</td>
                     <td className="p-2 border">{item.total_quantity}</td>
@@ -182,4 +178,3 @@ const Sales = () => {
 };
 
 export default Sales;
-
