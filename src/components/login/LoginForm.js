@@ -45,6 +45,7 @@ const LoginForm = ({ email, setEmail, password, setPassword, onSubmit, onClose }
         Login
       </button>
     </div>
+          <p>Admin:admin@gmail.com pass:admin123</p>
   </form>
 </div>
 
