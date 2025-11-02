@@ -1,0 +1,20 @@
+[
+  {
+    "id": 1,
+    "name": "Green T-shirt",
+    "description": "Soft cotton tee",
+    "price": 1200,
+    "actualPrice": 1000,
+    "stock": 15,
+    "imageFile": "tshirt.jpg"
+  },
+  {
+    "id": 2,
+    "name": "Sneakers",
+    "description": "Comfortable running shoes",
+    "price": 5000,
+    "actualPrice": 4500,
+    "stock": 8,
+    "imageFile": "sneakers.jpg"
+  }
+]
