@@ -36,7 +36,7 @@ const LoginForm = ({ email, setEmail, password, setPassword, onSubmit, onClose }
         onChange={e => setPassword(e.target.value)}
         required
       />
-      <p>Admin:admin@gmail.com pass:admin123</p>
+      <p>Admin:user@example.com pass:123456</p>
       {/* Submit Button */}
       <button
         type="submit"
