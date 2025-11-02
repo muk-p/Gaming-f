@@ -14,6 +14,11 @@ const ProductCard = ({ product, onAdd }) => {
     onAdd();
   };
 
+  // ✅ Allow both URLs and local files
+  const imageSrc = imageFile.startsWith('http')
+    ? imageFile
+    : `/uploads/${imageFile}`;
+
   return (
     <div
       key={id}
@@ -22,22 +27,24 @@ const ProductCard = ({ product, onAdd }) => {
     >
       <div className="mb-3">
         <img
-          src={`https://back-gf-production.up.railway.app/uploads/${imageFile}`}
+          src={imageSrc}
           alt={name}
           className="w-full h-48 object-contain rounded-md mb-2 bg-gray-100"
         />
         <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
       </div>
 
-      <p className="text-green-600 font-medium">KES {actualPrice}</p>
-      <p className="text-red-600 line-through text-sm mb-2">KES {price}</p>
+      <p className="text-green-600 font-medium">KES {actualPrice.toLocaleString()}</p>
+      <p className="text-red-600 line-through text-sm mb-2">KES {price.toLocaleString()}</p>
 
       {isDescriptionVisible ? (
         <p className="text-sm text-gray-600 mb-3 transition-all duration-300">
           {description}
         </p>
       ) : (
-        <p className="text-sm text-gray-400 mb-3 italic">Click to view description</p>
+        <p className="text-sm text-gray-400 mb-3 italic">
+          Click to view description
+        </p>
       )}
 
       <button
