@@ -14,11 +14,6 @@ const ProductCard = ({ product, onAdd }) => {
     onAdd();
   };
 
-  // ✅ Allow both URLs and local files
-  const imageSrc = imageFile.startsWith('http')
-    ? imageFile
-    : `/uploads/${imageFile}`;
-
   return (
     <div
       key={id}
@@ -27,9 +22,12 @@ const ProductCard = ({ product, onAdd }) => {
     >
       <div className="mb-3">
         <img
-          src={imageSrc}
+          src={imageFile}
           alt={name}
           className="w-full h-48 object-contain rounded-md mb-2 bg-gray-100"
+          onError={(e) => {
+            e.target.src = 'https://via.placeholder.com/300x200?text=Image+Not+Found';
+          }}
         />
         <h3 className="text-lg font-semibold text-gray-800">{name}</h3>
       </div>
