@@ -1,41 +1,43 @@
-import { createContext, useState, useEffect } from 'react';
-import axios from '../api/axios'; 
+import { createContext, useState, useEffect } from "react";
 
 const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
-  // Called after login to set user and store token
-  const login = (token) => {
-    localStorage.setItem('token', token);
-    axios.get('/auth/me', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    .then(res => setUser(res.data))
-    .catch(() => localStorage.removeItem('token'));
-  };
-
-  // Runs on initial app load to check if user is already logged in
+  // Runs once on load — restore session from localStorage
   useEffect(() => {
-    const token = localStorage.getItem('token');
-    if (!token) return;
-
-    axios.get('/auth/me', {
-      headers: { Authorization: `Bearer ${token}` },
-    })
-    .then(res => setUser(res.data))
-    .catch(() => {
-      localStorage.removeItem('token');
-      setUser(null);
-    });
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setUser(JSON.parse(storedUser));
+    }
   }, []);
 
+  // Simulated login (no backend)
+  const login = (email = "user@example.com", password = "123456") => {
+    // you could add simple validation if you want
+    const mockUser = {
+      id: 1,
+      name: "Demo User",
+      email,
+      role: email === "admin@example.com" ? "admin" : "user",
+    };
+    localStorage.setItem("user", JSON.stringify(mockUser));
+    setUser(mockUser);
+  };
+
+  // Logout (clear local session)
+  const logout = () => {
+    localStorage.removeItem("user");
+    setUser(null);
+  };
+
   return (
-    <AuthContext.Provider value={{ user, setUser, login }}>
+    <AuthContext.Provider value={{ user, setUser, login, logout }}>
       {children}
     </AuthContext.Provider>
   );
 };
 
 export default AuthContext;
+
