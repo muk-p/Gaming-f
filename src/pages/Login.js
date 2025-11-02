@@ -44,26 +44,28 @@ const LoginPage = () => {
     p.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  // ✅ Mock login (no backend)
-  const handleLogin = (e) => {
-    e.preventDefault();
+// Mock login
+const handleLogin = (e) => {
+  e.preventDefault();
 
-    // Example static user (you can modify)
-    const validUser = {
-      email: 'user@example.com',
-      password: '123456',
-      token: 'mock-token-12345'
-    };
-
-    if (form.email === validUser.email && form.password === validUser.password) {
-      login(validUser.token);
-      setModals({ login: false, cart: false, tab: true });
-      setForm({ email: '', password: '' });
-      showAlert('Login successful');
-    } else {
-      alert('Invalid email or password (try user@example.com / 123456)');
-    }
+  // Example static user
+  const validUser = {
+    email: "user@example.com",
+    password: "123456",
+    token: "mock-token-12345",
   };
+
+  // Basic validation
+  if (form.email === validUser.email && form.password === validUser.password) {
+    login(validUser.email, validUser.password);
+
+    setModals({ login: false, cart: false, tab: true });
+    setForm({ email: "", password: "" });
+    showAlert("Login successful");
+  } else {
+    alert("Invalid email or password (try user@example.com / 123456)");
+  }
+};
 
   const handleAddToCart = (product) => {
     setCart(prev => {
