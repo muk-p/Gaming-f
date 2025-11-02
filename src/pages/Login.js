@@ -1,5 +1,4 @@
 import { useState, useEffect, useContext } from 'react';
-import axios from '../api/axios';
 import AuthContext from '../context/AuthContext';
 import { useNavigate } from 'react-router-dom';
 
@@ -25,9 +24,11 @@ const LoginPage = () => {
     }
   });
 
+  // ✅ Load local JSON data instead of API
   useEffect(() => {
-    axios.get('/products')
-      .then(res => setProducts(res.data))
+    fetch('/products.json')
+      .then(res => res.json())
+      .then(setProducts)
       .catch(() => alert('Could not load products'));
   }, []);
 
@@ -43,15 +44,24 @@ const LoginPage = () => {
     p.name.toLowerCase().includes(search.toLowerCase())
   );
 
-  const handleLogin = async (e) => {
+  // ✅ Mock login (no backend)
+  const handleLogin = (e) => {
     e.preventDefault();
-    try {
-      const res = await axios.post('/auth/login', form);
-      login(res.data.token);
+
+    // Example static user (you can modify)
+    const validUser = {
+      email: 'user@example.com',
+      password: '123456',
+      token: 'mock-token-12345'
+    };
+
+    if (form.email === validUser.email && form.password === validUser.password) {
+      login(validUser.token);
       setModals({ login: false, cart: false, tab: true });
       setForm({ email: '', password: '' });
-    } catch {
-      alert('Login failed');
+      showAlert('Login successful');
+    } else {
+      alert('Invalid email or password (try user@example.com / 123456)');
     }
   };
 
@@ -80,7 +90,6 @@ const LoginPage = () => {
 
   return (
     <div className="min-h-screen flex flex-col bg-white text-gray-800">
-
       <Navbar
         searchTerm={search}
         setSearchTerm={setSearch}
@@ -118,30 +127,30 @@ const LoginPage = () => {
 
       {/* HERO */}
       <div className="pt-[80px]">
-      <section className="relative flex flex-col md:flex-row items-center justify-between pt-24 pb-12 bg-gray-900 text-white">
-        <img
-          src="https://images.unsplash.com/photo-1604846887565-640d2f52d564?q=80"
-          alt="Background"
-          className="absolute inset-0 w-full h-full object-cover opacity-30"
-        />
-        <div className="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-gray-900/30 to-gray-900/80" />
-        <div className="relative z-10 px-6 md:w-1/2 space-y-5">
-          <h1 className="text-4xl md:text-5xl font-bold">Level-Up Your Gaming Experience</h1>
-          <p className="text-lg text-gray-300">Latest gear, unbeatable deals & fast delivery in one place.</p>
-          <button
-            onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
-            className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-full text-white transition"
-          >
-            Shop Now
-          </button>
-        </div>
-        <img
-          src="https://images.unsplash.com/photo-1705910308295-439693a18f50?q=80"
-          alt="Setup"
-          className="relative z-10 w-full md:w-1/2 max-h-80 object-cover rounded-xl mt-8 md:mt-0"
-        />
-      </section>
-            </div>
+        <section className="relative flex flex-col md:flex-row items-center justify-between pt-24 pb-12 bg-gray-900 text-white">
+          <img
+            src="https://images.unsplash.com/photo-1604846887565-640d2f52d564?q=80"
+            alt="Background"
+            className="absolute inset-0 w-full h-full object-cover opacity-30"
+          />
+          <div className="absolute inset-0 bg-gradient-to-b from-gray-900/80 via-gray-900/30 to-gray-900/80" />
+          <div className="relative z-10 px-6 md:w-1/2 space-y-5">
+            <h1 className="text-4xl md:text-5xl font-bold">Level-Up Your Gaming Experience</h1>
+            <p className="text-lg text-gray-300">Latest gear, unbeatable deals & fast delivery in one place.</p>
+            <button
+              onClick={() => document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' })}
+              className="bg-blue-600 hover:bg-blue-700 px-6 py-3 rounded-full text-white transition"
+            >
+              Shop Now
+            </button>
+          </div>
+          <img
+            src="https://images.unsplash.com/photo-1705910308295-439693a18f50?q=80"
+            alt="Setup"
+            className="relative z-10 w-full md:w-1/2 max-h-80 object-cover rounded-xl mt-8 md:mt-0"
+          />
+        </section>
+      </div>
 
       {/* PRODUCTS */}
       <div id="products" className="px-6 py-8">
