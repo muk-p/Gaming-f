@@ -1,9 +1,49 @@
-const ProductList = ({ products, user, form, setForm, edit, setEdit, preview, setPreview, fetchData }) => {
+import { useEffect, useState } from "react";
+
+const ProductList = ({ user, form, setForm, edit, setEdit, preview, setPreview }) => {
+  const [products, setProducts] = useState([]);
+
+  // ✅ Fetch latest data dynamically from /public/products.json
+  const fetchData = async () => {
+    try {
+      const res = await fetch("/products.json");
+      const data = await res.json();
+      setProducts(data);
+    } catch (error) {
+      console.error("Error loading products:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   const handleEdit = (product) => {
     setEdit(product.id);
     setForm({ ...product, imageFile: product.imageFile || "", image: null });
     setPreview(null);
   };
+
+  const handleSave = () => {
+    // Save edited product locally and persist to localStorage
+    const updated = products.map((p) =>
+      p.id === edit ? { ...p, ...form, imageFile: preview || form.imageFile } : p
+    );
+    setProducts(updated);
+    localStorage.setItem("products", JSON.stringify(updated));
+    setEdit(null);
+    setPreview(null);
+  };
+
+  // ✅ Load from localStorage first if available
+  useEffect(() => {
+    const local = localStorage.getItem("products");
+    if (local) {
+      setProducts(JSON.parse(local));
+    } else {
+      fetchData();
+    }
+  }, []);
 
   return (
     <div className="space-y-4">
@@ -45,7 +85,7 @@ const ProductList = ({ products, user, form, setForm, edit, setEdit, preview, se
                 className="w-full p-1 border rounded mb-1"
               />
 
-              {/* Allow either file upload or direct URL input */}
+              {/* URL or upload option */}
               <label className="block text-sm font-semibold mt-2">Image (URL or Upload)</label>
               <input
                 name="imageFile"
@@ -55,7 +95,6 @@ const ProductList = ({ products, user, form, setForm, edit, setEdit, preview, se
                 onChange={(e) => setForm({ ...form, imageFile: e.target.value })}
                 className="w-full p-1 border rounded mb-1"
               />
-
               <input
                 name="image"
                 type="file"
@@ -77,6 +116,21 @@ const ProductList = ({ products, user, form, setForm, edit, setEdit, preview, se
                   className="w-24 h-24 object-cover rounded"
                 />
               )}
+
+              <div className="mt-2 space-x-2">
+                <button
+                  onClick={handleSave}
+                  className="bg-green-600 text-white px-3 py-1 rounded"
+                >
+                  Save
+                </button>
+                <button
+                  onClick={() => setEdit(null)}
+                  className="bg-gray-400 text-white px-3 py-1 rounded"
+                >
+                  Cancel
+                </button>
+              </div>
             </>
           ) : (
             <>
