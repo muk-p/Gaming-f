@@ -6,7 +6,7 @@
     "price": 3500,
     "actualPrice": 2999,
     "stock": 12,
-    "imageFile": "https://unsplash.com/photos/black-and-yellow-logitech-computer-mouse-Pv--vb5vwzQ"},
+    "imageFile": "/pics/gaming mouse.jpg"},
   {
     "id": 2,
     "name": "Mechanical Keyboard",
@@ -14,7 +14,7 @@
     "price": 6500,
     "actualPrice": 5799,
     "stock": 8,
-    "imageFile": "https://www.google.com/imgres?q=mechanical%20gaming%20keyboard&imgurl=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F71fRP7KY9hL._AC_SL1500_.jpg&imgrefurl=https%3A%2F%2Fwww.ubuy.ke%2Fen%2Fproduct%2FR5FL3GC-mechanical-keyboard-87-keys-small-compact-multicolour-led-backlit-mk1-wired-usb-gaming-keyboard-with-blue-switches-100-anti-ghosting-metal-constructio%3Fsrsltid%3DAfmBOopaBAKytYzy_digWK1lG4IWaqRhllq4XBEhOwA_rgtXztFgW13j&docid=UDAB8wwoFu1KBM&tbnid=lNiY9HGQ_yeDmM&vet=12ahUKEwjforSLnNSQAxXL1wIHHQ95ACkQM3oECBgQAA..i&w=1488&h=789&hcb=2&ved=2ahUKEwjforSLnNSQAxXL1wIHHQ95ACkQM3oECBgQAA" },
+    "imageFile": "/pics/keyboard.jpg"},
   {
     "id": 3,
     "name": "Gaming Headset",
@@ -22,7 +22,7 @@
     "price": 5500,
     "actualPrice": 4999,
     "stock": 10,
-    "imageFile": "https://www.google.com/imgres?q=gaming%20headset&imgurl=https%3A%2F%2Fm.media-amazon.com%2Fimages%2FI%2F61LMoWAyWRL._AC_SL1100_.jpg&imgrefurl=https%3A%2F%2Fwww.ubuy.ke%2Fen%2Fproduct%2F3O0071JOW-bengoo-g9000-stereo-gaming-headset-for-ps4-pc-xbox-one-ps5-controller-noise-cancelling-over-ear-headphones-with-mic-led-light-bass-surround-soft%3Fsrsltid%3DAfmBOorDnkzPg6KYFurH0nP2PPkHGYlq1XDz9KvxDYAXyNZIM94kfZae&docid=zcOupl1RTulx3M&tbnid=8HqOzFkHimCs0M&vet=12ahUKEwj7tLqynNSQAxVS1wIHHaIQLKkQM3oECB4QAA..i&w=1071&h=1099&hcb=2&ved=2ahUKEwj7tLqynNSQAxVS1wIHHaIQLKkQM3oECB4QAA" },
+    "imageFile": "/pics/gaming headset.jpg"},
   {
     "id": 4,
     "name": "Ultra-Wide Monitor",
@@ -30,5 +30,5 @@
     "price": 120000,
     "actualPrice": 104999,
     "stock": 4,
-    "imageFile": "https://www.google.com/imgres?q=ultrawide%20monitor&imgurl=https%3A%2F%2Fi.rtings.com%2Fassets%2Fpages%2FI3j8zFmb%2Fbest-uw-gaming-monitors-20230802-medium.jpg%3Fformat%3Dauto&imgrefurl=https%3A%2F%2Fwww.rtings.com%2Fmonitor%2Freviews%2Fbest%2Fultrawide-gaming&docid=eYJdNHte14-JZM&tbnid=A7a8EUl3GA_v3M&vet=12ahUKEwjAhvTDnNSQAxVQR_4FHcgaAtkQM3oECBQQAA..i&w=1000&h=563&hcb=2&ved=2ahUKEwjAhvTDnNSQAxVQR_4FHcgaAtkQM3oECBQQAA"}
+    "imageFile": "/pics/ultrawide monitor.jpg"}
 ]
